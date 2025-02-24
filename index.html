@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Cota</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"], input[type="checkbox"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            display: none;
+        }
+        .details {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Cota</h1>
+        
+        <div class="form-group">
+            <label for="salary">Salário (R$):</label>
+            <input type="number" id="salary" min="0" step="0.01" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="num_children">Número de filhos:</label>
+            <input type="number" id="num_children" min="0" value="0">
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="pays_school"> Paga escola
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="pays_rent"> Paga aluguel
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <label for="num_parents">Número de pais dependentes:</label>
+            <input type="number" id="num_parents" min="0" value="0">
+        </div>
+        
+        <button onclick="calculateCota()">Calcular Cota</button>
+        
+        <div class="result" id="result">
+            <h2>Resultado do Cálculo</h2>
+            <p>Valor da cota: <strong id="cota-value">R$ 0,00</strong></p>
+            <div class="details" id="calculation-details"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateCota() {
+            // Get input values
+            const salary = parseFloat(document.getElementById("salary").value);
+            const numChildren = parseInt(document.getElementById("num_children").value) || 0;
+            const paysSchool = document.getElementById("pays_school").checked;
+            const paysRent = document.getElementById("pays_rent").checked;
+            const numParents = parseInt(document.getElementById("num_parents").value) || 0;
+            
+            // Validate input
+            if (isNaN(salary) || salary < 0) {
+                alert("Por favor, informe um valor válido para o salário.");
+                return;
+            }
+            
+            // Calculate discounts
+            let discount = 0;
+            discount += 0.5 * numChildren;
+            discount += paysSchool ? 1 : 0;
+            discount += paysRent ? 1 : 0;
+            discount += 0.5 * numParents;
+            
+            // Determine base percentage based on salary
+            let basePercentage;
+            if (salary < 1320.00) {
+                basePercentage = 3;
+            } else if (salary < 1980.00) {
+                basePercentage = 4;
+            } else if (salary < 2640.00) {
+                basePercentage = 5;
+            } else if (salary < 3300.00) {
+                basePercentage = 6;
+            } else if (salary < 3960.00) {
+                basePercentage = 7;
+            } else if (salary < 5280.00) {
+                basePercentage = 8;
+            } else if (salary < 6600.00) {
+                basePercentage = 9;
+            } else {
+                basePercentage = 10;
+            }
+            
+            // Calculate final percentage after applying discounts
+            let finalPercentage = basePercentage - discount;
+            finalPercentage = Math.max(finalPercentage, 0); // Ensure percentage is not negative
+            
+            // Calculate cota
+            const cota = (finalPercentage / 100) * salary;
+            
+            // Display result
+            document.getElementById("cota-value").textContent = `R$ ${cota.toFixed(2)}`.replace('.', ',');
+            
+            // Show detailed calculation
+            let details = `
+                <p>Cálculo detalhado:</p>
+                <ul>
+                    <li>Salário: R$ ${salary.toFixed(2).replace('.', ',')}</li>
+                    <li>Percentual base: ${basePercentage}%</li>
+                    <li>Descontos totais: ${discount.toFixed(1).replace('.', ',')} pontos percentuais</li>
+                    <ul>
+                        <li>Por filhos (${numChildren}): ${(0.5 * numChildren).toFixed(1).replace('.', ',')} pontos</li>
+                        <li>Por pagar escola: ${paysSchool ? '1,0' : '0,0'} ponto</li>
+                        <li>Por pagar aluguel: ${paysRent ? '1,0' : '0,0'} ponto</li>
+                        <li>Por pais dependentes (${numParents}): ${(0.5 * numParents).toFixed(1).replace('.', ',')} pontos</li>
+                    </ul>
+                    <li>Percentual final: ${finalPercentage.toFixed(1).replace('.', ',')}%</li>
+                    <li>Cálculo: ${finalPercentage.toFixed(1).replace('.', ',')}% de R$ ${salary.toFixed(2).replace('.', ',')}</li>
+                </ul>
+            `;
+            
+            document.getElementById("calculation-details").innerHTML = details;
+            document.getElementById("result").style.display = "block";
+        }
+    </script>
+</body>
+</html>
