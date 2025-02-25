@@ -81,30 +81,30 @@
         <h1>Calculadora de Cota</h1>
         
         <div class="form-group">
-            <label for="salary">Salário (R$):</label>
+            <label for="salary">Salário Bruto (R$):</label>
             <input type="number" id="salary" min="0" step="0.01" required>
+        </div>
+
+         <div class="form-group">
+            <label for="num_parents">Número de familiarias (pais,avós,etc) dependentes (desconto de 0,5% por familiar)</label>
+            <input type="number" id="num_parents" min="0" value="0">
         </div>
         
         <div class="form-group">
-            <label for="num_children">Número de filhos:</label>
+            <label for="num_children">Número de filhos (desconto de 0,5% por filho):</label>
             <input type="number" id="num_children" min="0" value="0">
         </div>
         
         <div class="form-group">
             <label>
-                <input type="checkbox" id="pays_school"> Paga escola
+                <input type="checkbox" id="pays_school"> Paga escola (desconto de 1%):
             </label>
         </div>
         
         <div class="form-group">
             <label>
-                <input type="checkbox" id="pays_rent"> Paga aluguel
+                <input type="checkbox" id="pays_rent"> Paga aluguel ou financiamento desconto de 1%
             </label>
-        </div>
-        
-        <div class="form-group">
-            <label for="num_parents">Número de pais dependentes:</label>
-            <input type="number" id="num_parents" min="0" value="0">
         </div>
         
         <div class="btn-container">
@@ -179,12 +179,12 @@
                 <ul>
                     <li>Salário: R$ ${salary.toFixed(2).replace('.', ',')}</li>
                     <li>Percentual base: ${basePercentage}%</li>
-                    <li>Descontos totais: ${discount.toFixed(1).replace('.', ',')} pontos percentuais</li>
+                    <li>Descontos totais: ${discount.toFixed(1).replace('.', ',')} %</li>
                     <ul>
-                        <li>Por filhos (${numChildren}): ${(0.5 * numChildren).toFixed(1).replace('.', ',')} pontos</li>
-                        <li>Por pagar escola: ${paysSchool ? '1,0' : '0,0'} ponto</li>
-                        <li>Por pagar aluguel: ${paysRent ? '1,0' : '0,0'} ponto</li>
-                        <li>Por pais dependentes (${numParents}): ${(0.5 * numParents).toFixed(1).replace('.', ',')} pontos</li>
+                        <li>Por filhos (${numChildren}): ${(0.5 * numChildren).toFixed(1).replace('.', ',')} %</li>
+                        <li>Por pagar escola: ${paysSchool ? '1,0' : '0,0'} %</li>
+                        <li>Por pagar aluguel: ${paysRent ? '1,0' : '0,0'} %</li>
+                        <li>Por familiares dependentes (${numParents}): ${(0.5 * numParents).toFixed(1).replace('.', ',')} %</li>
                     </ul>
                     <li>Percentual final: ${finalPercentage.toFixed(1).replace('.', ',')}%</li>
                     <li>Cálculo: ${finalPercentage.toFixed(1).replace('.', ',')}% de R$ ${salary.toFixed(2).replace('.', ',')}</li>
@@ -237,9 +237,10 @@
                 
                 pdf.text(`Salário: R$ ${parseFloat(salary).toFixed(2).replace('.', ',')}`, 20, 35);
                 pdf.text(`Número de filhos: ${numChildren}`, 20, 42);
+                pdf.text(`Número de familiares dependentes: ${numParents}`, 20, 63);
                 pdf.text(`Paga escola: ${paysSchool}`, 20, 49);
                 pdf.text(`Paga aluguel: ${paysRent}`, 20, 56);
-                pdf.text(`Número de pais dependentes: ${numParents}`, 20, 63);
+                
                 
                 // Adicionar linha separadora
                 pdf.line(20, 70, 190, 70);
