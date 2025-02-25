@@ -114,13 +114,13 @@
         </div>
         
         <div class="form-group">
-            <label for="num_children">Número de filhos menores que 18 anos (desconto de 0,5% por filho):</label>
+            <label for="num_children">Número de filhos com menos de 18 anos (desconto de 0,5% por filho):</label>
             <input type="number" id="num_children" min="0" value="0">
         </div>
         
         <div class="form-group sub-option">
             <label>
-                <input type="checkbox" id="sole_provider"> É a única pessoa que sustenta os filhos menores que 18 anos? (desconto de 1% por filho em vez de 0,5%)
+                <input type="checkbox" id="sole_provider"> É a única pessoa que sustenta os filhos com menos de 18 anos? (desconto de 1% por filho em vez de 0,5%)
             </label>
         </div>
         
@@ -150,7 +150,7 @@
             <h3>Informações Importantes:</h3>
             <ul>
                 <li><strong>Trabalhadores Formais e Informais:</strong> Considerar o Salário Bruto mensal recebido (sem desconto de INSS, IR etc), seja por registro ou contrato, ou por meios informais.</li>
-                <li><strong>Estudante Sem Renda:</strong>Considerar como Salário Bruto a soma de todos os valores que a pessoa que o sustenta paga para você (mesada, mensalidade de escola/universidade particular, aluguel caso more fora da casa de quem o sustenta etc.).</li>
+                <li><strong>Estudante Sem Emprego:</strong>Considerar como Salário Bruto a soma de todos os valores que a pessoa que o sustenta paga para você (mesada, mensalidade de escola/universidade particular, aluguel caso more fora da casa de quem o sustenta etc.).</li>
             </ul>
         </div>
         
@@ -236,7 +236,7 @@
                     <li>Percentual base: ${basePercentage}%</li>
                     <li>Descontos totais: ${discount.toFixed(1).replace('.', ',')} %</li>
                     <ul>
-                        <li>Por filhos menores de 18 anos(${numChildren}): ${(childDiscount * numChildren).toFixed(1).replace('.', ',')} % ${soleProvider ? '(desconto de 1% por filho como único sustento)' : '(desconto de 0,5% por filho)'}</li>
+                        <li>Por filhos com menos de 18 anos(${numChildren}): ${(childDiscount * numChildren).toFixed(1).replace('.', ',')} % ${soleProvider ? '(desconto de 1% por filho como único sustento)' : '(desconto de 0,5% por filho)'}</li>
                         <li>Por apoiar financeiramente familiar dependente (exceto filhos): ${hasDependentFamily ? '0,5' : '0,0'} %</li>
                         <li>Por pagar escola: ${paysSchool ? '1,0' : '0,0'} %</li>
                         <li>Por pagar aluguel ou financiamento: ${paysRent ? '1,0' : '0,0'} %</li>
@@ -301,7 +301,7 @@
                 const paysRent = document.getElementById("pays_rent").checked ? "Sim" : "Não";
                 
                 pdf.text(`Salário: R$ ${parseFloat(salary).toFixed(2).replace('.', ',')}`, 20, 35);
-                pdf.text(`Número de filhos menores de 18 anos: ${numChildren}`, 20, 42);
+                pdf.text(`Número de filhos com menos de 18 anos: ${numChildren}`, 20, 42);
                 pdf.text(`Único sustento dos filhos:  ${soleProvider}`, 20, 49);https://github.com/ComunaTec/calculadora_cota/blob/main/index.html
                 pdf.text(`Apoia financeiramente algum familiar dependente (exceto filhos): ${hasDependentFamily}`, 20, 56);
                 pdf.text(`Paga escola: ${paysSchool}`, 20, 63);
