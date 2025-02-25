@@ -236,8 +236,8 @@
                     <li>Percentual base: ${basePercentage}%</li>
                     <li>Descontos totais: ${discount.toFixed(1).replace('.', ',')} %</li>
                     <ul>
-                        <li>Por filhos menores de 18 (${numChildren}): ${(childDiscount * numChildren).toFixed(1).replace('.', ',')} % ${soleProvider ? '(desconto de 1% por filho como único sustento)' : '(desconto de 0,5% por filho)'}</li>
-                        <li>Por aopiar financeiramente familiar dependente (exceto filhos): ${hasDependentFamily ? '0,5' : '0,0'} %</li>
+                        <li>Por filhos menores de 18 anos(${numChildren}): ${(childDiscount * numChildren).toFixed(1).replace('.', ',')} % ${soleProvider ? '(desconto de 1% por filho como único sustento)' : '(desconto de 0,5% por filho)'}</li>
+                        <li>Por apoiar financeiramente familiar dependente (exceto filhos): ${hasDependentFamily ? '0,5' : '0,0'} %</li>
                         <li>Por pagar escola: ${paysSchool ? '1,0' : '0,0'} %</li>
                         <li>Por pagar aluguel ou financiamento: ${paysRent ? '1,0' : '0,0'} %</li>
                     </ul>
