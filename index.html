@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Cota</title>
+    <!-- Importação das bibliotecas para geração de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,6 +50,17 @@
         }
         button:hover {
             background-color: #45a049;
+        }
+        .btn-pdf {
+            background-color: #2196F3;
+            margin-left: 10px;
+        }
+        .btn-pdf:hover {
+            background-color: #0b7dda;
+        }
+        .btn-container {
+            display: flex;
+            margin-top: 10px;
         }
         .result {
             margin-top: 20px;
@@ -93,12 +107,17 @@
             <input type="number" id="num_parents" min="0" value="0">
         </div>
         
-        <button onclick="calculateCota()">Calcular Cota</button>
+        <div class="btn-container">
+            <button onclick="calculateCota()">Calcular Cota</button>
+        </div>
         
         <div class="result" id="result">
             <h2>Resultado do Cálculo</h2>
             <p>Valor da cota: <strong id="cota-value">R$ 0,00</strong></p>
             <div class="details" id="calculation-details"></div>
+            <div class="btn-container">
+                <button class="btn-pdf" onclick="generatePDF()">Salvar em PDF</button>
+            </div>
         </div>
     </div>
 
@@ -174,6 +193,75 @@
             
             document.getElementById("calculation-details").innerHTML = details;
             document.getElementById("result").style.display = "block";
+        }
+        
+        function generatePDF() {
+            // Usando as bibliotecas jsPDF e html2canvas para salvar como PDF
+            const { jsPDF } = window.jspdf;
+            
+            // Definir título e data para o PDF
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('pt-BR');
+            const title = "Cálculo de Cota - " + dateStr;
+            
+            // Capturar o elemento de resultado
+            const element = document.getElementById('result');
+            
+            // Notificar o usuário que o PDF está sendo gerado
+            const originalText = element.querySelector('h2').textContent;
+            element.querySelector('h2').textContent = "Gerando PDF, aguarde...";
+            
+            // Usar html2canvas para capturar o elemento como uma imagem
+            html2canvas(element, {scale: 2}).then(canvas => {
+                // Restaurar o texto original
+                element.querySelector('h2').textContent = originalText;
+                
+                // Criar um PDF no formato A4
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                // Adicionar título
+                pdf.setFontSize(16);
+                pdf.text(title, 20, 20);
+                
+                // Adicionar linha separadora
+                pdf.setLineWidth(0.5);
+                pdf.line(20, 25, 190, 25);
+                
+                // Adicionar dados do formulário
+                pdf.setFontSize(12);
+                const salary = document.getElementById("salary").value;
+                const numChildren = document.getElementById("num_children").value || "0";
+                const paysSchool = document.getElementById("pays_school").checked ? "Sim" : "Não";
+                const paysRent = document.getElementById("pays_rent").checked ? "Sim" : "Não";
+                const numParents = document.getElementById("num_parents").value || "0";
+                
+                pdf.text(`Salário: R$ ${parseFloat(salary).toFixed(2).replace('.', ',')}`, 20, 35);
+                pdf.text(`Número de filhos: ${numChildren}`, 20, 42);
+                pdf.text(`Paga escola: ${paysSchool}`, 20, 49);
+                pdf.text(`Paga aluguel: ${paysRent}`, 20, 56);
+                pdf.text(`Número de pais dependentes: ${numParents}`, 20, 63);
+                
+                // Adicionar linha separadora
+                pdf.line(20, 70, 190, 70);
+                
+                // Obter a imagem da visualização HTML
+                const imgData = canvas.toDataURL('image/png');
+                
+                // Calcular a largura e altura para ajustar à página A4
+                const imgWidth = 190; 
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                
+                // Adicionar a imagem ao PDF
+                pdf.addImage(imgData, 'PNG', 10, 75, imgWidth, imgHeight);
+                
+                // Adicionar rodapé
+                const pageHeight = pdf.internal.pageSize.height;
+                pdf.setFontSize(10);
+                pdf.text('Documento gerado em ' + dateStr, 20, pageHeight - 10);
+                
+                // Salvar o PDF
+                pdf.save('calculo-cota.pdf');
+            });
         }
     </script>
 </body>
