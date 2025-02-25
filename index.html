@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Cota</title>
+    <title>Calculadora de Referência de Valor da Cota</title>
     <!-- Importação das bibliotecas para geração de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -19,6 +19,17 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -74,11 +85,28 @@
             font-size: 0.9em;
             color: #555;
         }
+        .sub-option {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+        .info-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            border-left: 4px solid #2196F3;
+            font-size: 0.9em;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #0d47a1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Calculadora de Cota</h1>
+        <h1>Calculadora de Referência de Valor da Cota</h1>
+        <p class="subtitle">Definida pelo Militante</p>
         
         <div class="form-group">
             <label for="salary">Salário Bruto (R$):</label>
@@ -90,9 +118,16 @@
             <input type="number" id="num_children" min="0" value="0">
         </div>
         
-         <div class="form-group">
-            <label for="num_parents">Número de familiarias (pais,avós,etc) dependentes (desconto de 0,5% por familiar):</label>
-            <input type="number" id="num_parents" min="0" value="0">
+        <div class="form-group sub-option">
+            <label>
+                <input type="checkbox" id="sole_provider"> É a única pessoa que sustenta os filhos? (desconto de 1% por filho em vez de 0,5%)
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="has_dependent_family"> Cuida de algum familiar dependente (desconto fixo de 0,5%)
+            </label>
         </div>
         
         <div class="form-group">
@@ -111,6 +146,14 @@
             <button onclick="calculateCota()">Calcular Cota</button>
         </div>
         
+        <div class="info-box">
+            <h3>Informações Importantes:</h3>
+            <ul>
+                <li><strong>Trabalhadores Formais e Informais:</strong> Considerar o Salário Bruto mensal recebido, seja por registro ou contrato, ou por meios informais.</li>
+                <li><strong>Estudante Sem Renda:</strong> Considerar como Salário Bruto a soma de todos os valores que a pessoa que lhe sustenta paga para você (Aluguel, mensalidade, alimentação, mesada, etc).</li>
+            </ul>
+        </div>
+        
         <div class="result" id="result">
             <h2>Resultado do Cálculo</h2>
             <p>Valor da cota: <strong id="cota-value">R$ 0,00</strong></p>
@@ -126,9 +169,10 @@
             // Get input values
             const salary = parseFloat(document.getElementById("salary").value);
             const numChildren = parseInt(document.getElementById("num_children").value) || 0;
+            const soleProvider = document.getElementById("sole_provider").checked;
+            const hasDependentFamily = document.getElementById("has_dependent_family").checked;
             const paysSchool = document.getElementById("pays_school").checked;
             const paysRent = document.getElementById("pays_rent").checked;
-            const numParents = parseInt(document.getElementById("num_parents").value) || 0;
             
             // Validate input
             if (isNaN(salary) || salary < 0) {
@@ -138,10 +182,17 @@
             
             // Calculate discounts
             let discount = 0;
-            discount += 0.5 * numChildren;
+            
+            // Desconto por filhos - 1% por filho se for único sustento, 0,5% caso contrário
+            const childDiscount = soleProvider ? 1.0 : 0.5;
+            discount += childDiscount * numChildren;
+            
+            // Desconto por familiares dependentes - fixo de 0,5% se marcado
+            discount += hasDependentFamily ? 0.5 : 0;
+            
+            // Outros descontos
             discount += paysSchool ? 1 : 0;
             discount += paysRent ? 1 : 0;
-            discount += 0.5 * numParents;
             
             // Determine base percentage based on salary
             let basePercentage;
@@ -171,7 +222,11 @@
             const cota = (finalPercentage / 100) * salary;
             
             // Display result
-            document.getElementById("cota-value").textContent = `R$ ${cota.toFixed(2)}`.replace('.', ',');
+            if (cota < 10) {
+                document.getElementById("cota-value").textContent = `R$ 10,00 (valor mínimo)`;
+            } else {
+                document.getElementById("cota-value").textContent = `R$ ${cota.toFixed(2)}`.replace('.', ',');
+            }
             
             // Show detailed calculation
             let details = `
@@ -181,8 +236,8 @@
                     <li>Percentual base: ${basePercentage}%</li>
                     <li>Descontos totais: ${discount.toFixed(1).replace('.', ',')} %</li>
                     <ul>
-                        <li>Por filhos (${numChildren}): ${(0.5 * numChildren).toFixed(1).replace('.', ',')} %</li>
-                        <li>Por familiares dependentes (${numParents}): ${(0.5 * numParents).toFixed(1).replace('.', ',')} %</li>
+                        <li>Por filhos (${numChildren}): ${(childDiscount * numChildren).toFixed(1).replace('.', ',')} % ${soleProvider ? '(desconto de 1% por filho como único sustento)' : '(desconto de 0,5% por filho)'}</li>
+                        <li>Por familiar dependente: ${hasDependentFamily ? '0,5' : '0,0'} %</li>
                         <li>Por pagar escola: ${paysSchool ? '1,0' : '0,0'} %</li>
                         <li>Por pagar aluguel ou financiamento: ${paysRent ? '1,0' : '0,0'} %</li>
                     </ul>
@@ -190,6 +245,15 @@
                     <li>Cálculo: ${finalPercentage.toFixed(1).replace('.', ',')}% de R$ ${salary.toFixed(2).replace('.', ',')}</li>
                 </ul>
             `;
+            
+            // Adicionar mensagem para cota mínima se o valor calculado for menor que 10
+            if (cota < 10) {
+                details += `
+                <p style="color: #d32f2f; font-weight: bold; margin-top: 15px; padding: 10px; border: 1px solid #d32f2f; border-radius: 4px; background-color: #ffebee;">
+                    Nota: Como o valor calculado (R$ ${cota.toFixed(2).replace('.', ',')}) é menor que R$ 10,00, a cota mínima a ser considerada será de R$ 10,00.
+                </p>
+                `;
+            }
             
             document.getElementById("calculation-details").innerHTML = details;
             document.getElementById("result").style.display = "block";
@@ -231,19 +295,31 @@
                 pdf.setFontSize(12);
                 const salary = document.getElementById("salary").value;
                 const numChildren = document.getElementById("num_children").value || "0";
+                const soleProvider = document.getElementById("sole_provider").checked ? "Sim" : "Não";
+                const hasDependentFamily = document.getElementById("has_dependent_family").checked ? "Sim" : "Não";
                 const paysSchool = document.getElementById("pays_school").checked ? "Sim" : "Não";
                 const paysRent = document.getElementById("pays_rent").checked ? "Sim" : "Não";
-                const numParents = document.getElementById("num_parents").value || "0";
                 
                 pdf.text(`Salário: R$ ${parseFloat(salary).toFixed(2).replace('.', ',')}`, 20, 35);
                 pdf.text(`Número de filhos: ${numChildren}`, 20, 42);
-                pdf.text(`Número de familiares dependentes: ${numParents}`, 20, 63);
-                pdf.text(`Paga escola: ${paysSchool}`, 20, 49);
-                pdf.text(`Paga aluguel ou financiamento: ${paysRent}`, 20, 56);
-                
+                pdf.text(`Único sustento dos filhos: ${soleProvider}`, 20, 49);https://github.com/ComunaTec/calculadora_cota/blob/main/index.html
+                pdf.text(`Cuida de familiar dependente: ${hasDependentFamily}`, 20, 56);
+                pdf.text(`Paga escola: ${paysSchool}`, 20, 63);
+                pdf.text(`Paga aluguel ou financiamento: ${paysRent}`, 20, 70);
                 
                 // Adicionar linha separadora
-                pdf.line(20, 70, 190, 70);
+                pdf.line(20, 77, 190, 77);
+                
+                // Verificar se o valor da cota é menor que 10 para adicionar nota sobre cota mínima
+                const cotaOriginal = (finalPercentage / 100) * salary;
+                const cotaFinal = cotaOriginal < 10 ? 10 : cotaOriginal;
+                
+                if (cotaOriginal < 10) {
+                    pdf.setTextColor(213, 47, 47); // Cor vermelha para destaque
+                    pdf.text(`Nota: Como o valor calculado (R$ ${cotaOriginal.toFixed(2).replace('.', ',')}) é menor`, 20, 84);
+                    pdf.text(`que R$ 10,00, a cota mínima a ser considerada será de R$ 10,00.`, 20, 91);
+                    pdf.setTextColor(0, 0, 0); // Resetar para cor preta
+                }
                 
                 // Obter a imagem da visualização HTML
                 const imgData = canvas.toDataURL('image/png');
@@ -252,8 +328,9 @@
                 const imgWidth = 190; 
                 const imgHeight = canvas.height * imgWidth / canvas.width;
                 
-                // Adicionar a imagem ao PDF
-                pdf.addImage(imgData, 'PNG', 10, 75, imgWidth, imgHeight);
+                // Adicionar a imagem ao PDF com posição ajustada se tiver mensagem de cota mínima
+                const yPosition = cotaOriginal < 10 ? 100 : 82;
+                pdf.addImage(imgData, 'PNG', 10, yPosition, imgWidth, imgHeight);
                 
                 // Adicionar rodapé
                 const pageHeight = pdf.internal.pageSize.height;
