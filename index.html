@@ -72,6 +72,7 @@
         <div class="info-box">
             <h3>Informações Importantes:</h3>
             <ul>
+                <li><strong>Salário Mínimo Atual:</strong> <span id="sm-info">R$ 1.412,00 (jan/2024)</span></li>
                 <li><strong>Trabalhadores Formais e Informais:</strong> Considerar o Salário Bruto mensal recebido (sem desconto de INSS, IR etc).</li>
                 <li><strong>Estudante Sem Emprego:</strong> Considerar como Salário Bruto a soma de todos os valores que a pessoa que o sustenta paga para você.</li>
             </ul>
@@ -90,6 +91,7 @@
     <script>
         const { jsPDF } = window.jspdf;
         let salarioMinimo = 1412.00;
+        let dataAtualizacaoSM = 'jan/2024';
 
         async function buscarSalarioMinimo() {
             try {
@@ -104,7 +106,9 @@
                     
                     if(valores.length > 0) {
                         salarioMinimo = parseFloat(valores[0].VALVALOR);
-                        document.getElementById("salary").placeholder = `Salário mínimo atual: R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                        dataAtualizacaoSM = new Date(valores[0].VALDATA).toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'});
+                        document.getElementById("sm-info").innerHTML = `R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${dataAtualizacaoSM})`;
+                        document.getElementById("salary").placeholder = `Salário mínimo atual: R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${dataAtualizacaoSM})`;
                     }
                 }
             } catch (erro) {
@@ -140,7 +144,8 @@
                     detalhes.push({
                         faixa: `${limiteAnterior.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})} - ${faixa.limite.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`,
                         aliquota: `${(faixa.aliquota * 100).toFixed(1)}%`,
-                        valor: contribuicao
+                        base: base.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
+                        valor: contribuicao.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})
                     });
                 }
             });
@@ -199,6 +204,27 @@
                     </ul>
                     <li>Contribuição final: R$ ${cotaOriginal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
                 </ul>
+                <h4>Detalhamento por faixa salarial:</h4>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th>Faixa</th>
+                            <th>Base de Cálculo</th>
+                            <th>Alíquota</th>
+                            <th>Contribuição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${detalhes.map(item => `
+                            <tr>
+                                <td>${item.faixa}</td>
+                                <td>${item.base}</td>
+                                <td>${item.aliquota}</td>
+                                <td>${item.valor}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
 
             if(cotaOriginal < 10) {
@@ -241,25 +267,25 @@
                 pdf.text(`Apoia familiar dependente: ${document.getElementById("has_dependent_family").checked ? 'Sim' : 'Não'}`, 20, 56);
                 pdf.text(`Paga escola: ${document.getElementById("pays_school").checked ? 'Sim' : 'Não'}`, 20, 63);
                 pdf.text(`Paga aluguel/financiamento: ${document.getElementById("pays_rent").checked ? 'Sim' : 'Não'}`, 20, 70);
+                pdf.text(`Salário Mínimo Referência: R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${dataAtualizacaoSM})`, 20, 77);
 
-                pdf.line(20, 77, 190, 77);
+                pdf.line(20, 84, 190, 84);
                 
                 const cotaOriginal = parseFloat(document.getElementById("cota-value").textContent.replace(/[^0-9,]/g, '').replace(',', '.'));
                 if(cotaOriginal < 10) {
                     pdf.setTextColor(213, 47, 47);
-                    pdf.text(`Nota: Valor mínimo aplicado de R$ 10,00`, 20, 84);
+                    pdf.text(`Nota: Valor mínimo aplicado de R$ 10,00`, 20, 91);
                     pdf.setTextColor(0, 0, 0);
                 }
 
                 const imgData = canvas.toDataURL('image/png');
-                pdf.addImage(imgData, 'PNG', 10, 90, 190, 100);
+                pdf.addImage(imgData, 'PNG', 10, 98, 190, 100);
                 pdf.setFontSize(10);
                 pdf.text('Documento gerado em ' + dateStr, 20, 280);
                 pdf.save('calculo-cota.pdf');
             });
         }
 
-        // Inicialização
         buscarSalarioMinimo();
     </script>
 </body>
