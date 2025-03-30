@@ -7,77 +7,180 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .container { background-color: #f5f5f5; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { text-align: center; margin-bottom: 5px; }
-        .subtitle { text-align: center; font-size: 16px; color: #666; margin-top: 0; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="number"], input[type="checkbox"] { padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        input[type="checkbox"] { width: auto; }
-        button { background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        button:hover { background-color: #45a049; }
-        .btn-pdf { background-color: #2196F3; margin-left: 10px; }
-        .btn-pdf:hover { background-color: #0b7dda; }
-        .btn-container { display: flex; margin-top: 10px; }
-        .result { margin-top: 20px; padding: 15px; background-color: #e8f5e9; border-radius: 4px; display: none; }
-        .details { margin-top: 10px; font-size: 0.9em; color: #555; }
-        .sub-option { margin-left: 20px; margin-top: 5px; }
-        .info-box { margin-top: 20px; padding: 15px; background-color: #e3f2fd; border-radius: 4px; border-left: 4px solid #2196F3; font-size: 0.9em; }
-        .info-box h3 { margin-top: 0; color: #0d47a1; }
-        .alerta { padding: 10px; border-radius: 4px; margin-top: 10px; }
-        .alerta-minimo { background-color: #ffebee; border: 1px solid #d32f2f; color: #d32f2f; }
-        .alerta-recomendacao { background-color: #e8f0fe; border: 1px solid #1a73e8; color: #1557b0; }
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        .container { 
+            background-color: #f5f5f5; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        h1 { 
+            text-align: center; 
+            margin-bottom: 5px; 
+            color: #2c3e50;
+        }
+        .subtitle { 
+            text-align: center; 
+            font-size: 16px; 
+            color: #666; 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            color: #333;
+        }
+        input[type="number"], input[type="checkbox"] { 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-bottom: 5px;
+        }
+        input[type="checkbox"] { 
+            width: auto; 
+            margin-right: 10px;
+        }
+        button { 
+            background-color: #4CAF50; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 10px; 
+            transition: 0.3s;
+        }
+        button:hover { 
+            background-color: #45a049; 
+        }
+        .btn-pdf { 
+            background-color: #2196F3; 
+            margin-left: 10px; 
+        }
+        .btn-pdf:hover { 
+            background-color: #0b7dda; 
+        }
+        .btn-container { 
+            display: flex; 
+            margin-top: 10px; 
+        }
+        .result { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background-color: #e8f5e9; 
+            border-radius: 4px; 
+            display: none; 
+        }
+        .details { 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #555; 
+        }
+        .sub-option { 
+            margin-left: 20px; 
+            margin-top: 5px; 
+        }
+        .info-box { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background-color: #e3f2fd; 
+            border-radius: 4px; 
+            border-left: 4px solid #2196F3; 
+            font-size: 0.9em; 
+        }
+        .info-box h3 { 
+            margin-top: 0; 
+            color: #0d47a1; 
+        }
+        .alerta { 
+            padding: 10px; 
+            border-radius: 4px; 
+            margin-top: 10px; 
+        }
+        .alerta-minimo { 
+            background-color: #ffebee; 
+            border: 1px solid #d32f2f; 
+            color: #d32f2f; 
+        }
+        .alerta-recomendacao { 
+            background-color: #e8f0fe; 
+            border: 1px solid #1a73e8; 
+            color: #1557b0; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 10px 0; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: right; 
+        }
+        th { 
+            background-color: #f0f0f0; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Calculadora de Referência de Valor da Cota</h1>
         <p class="subtitle">Esta calculadora sugere um valor, a cota deve ser definida pelo militante em discussão na célula</p>
-
-        <div class="form-group">
-            <label for="salary">Salário Bruto (R$):</label>
-            <input type="number" id="salary" min="0" step="0.01" required placeholder="Carregando salário mínimo...">
-        </div>
-
-        <div class="form-group">
-            <label for="num_children">Número de filhos com menos de 18 anos (desconto de 0,5% por filho):</label>
-            <input type="number" id="num_children" min="0" value="0">
-        </div>
-        <div class="form-group sub-option">
-            <label>
-                <input type="checkbox" id="sole_provider"> É a única pessoa que sustenta os filhos com menos de 18 anos? (desconto de 1% por filho)
-            </label>
-        </div>
-        <div class="form-group">
-            <label>
-                <input type="checkbox" id="has_dependent_family"> Apoia financeiramente algum familiar dependente (exceto filhos) (desconto fixo de 0,5%)
-            </label>
-        </div>
-        <div class="form-group">
-            <label>
-                <input type="checkbox" id="pays_school"> Paga escola (desconto de 1%)
-            </label>
-        </div>
-        <div class="form-group">
-            <label>
-                <input type="checkbox" id="pays_rent"> Paga aluguel ou financiamento (desconto de 1%)
-            </label>
-        </div>
-
-        <div class="btn-container">
-            <button onclick="calculateCota()">Calcular Cota</button>
-        </div>
-
+        
         <div class="info-box">
             <h3>Informações Importantes:</h3>
             <ul>
-                <li><strong>Salário Mínimo Atual:</strong> <span id="sm-info">R$ 1.412,00 (jan/2024)</span></li>
+                <li><strong>Salário Mínimo Atual:</strong> <span id="sm-info">Carregando...</span></li>
                 <li><strong>Trabalhadores Formais e Informais:</strong> Considerar o Salário Bruto mensal recebido (sem desconto de INSS, IR etc).</li>
                 <li><strong>Estudante Sem Emprego:</strong> Considerar como Salário Bruto a soma de todos os valores que a pessoa que o sustenta paga para você.</li>
             </ul>
         </div>
 
+        <div class="form-group">
+            <label for="salary">Salário Bruto (R$):</label>
+            <input type="number" id="salary" min="0" step="0.01" required placeholder="Carregando salário mínimo...">
+        </div>
+        <div class="form-group">
+            <label for="num_children">Número de filhos com menos de 18 anos:</label>
+            <input type="number" id="num_children" min="0" value="0">
+        </div>
+        <div class="form-group sub-option">
+            <label>
+                <input type="checkbox" id="sole_provider"> É único sustento dos filhos (desconto de 1% por filho)
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="has_dependent_family"> Apoia familiar dependente (0.5%)
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="pays_school"> Paga escola (1%)
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="pays_rent"> Paga aluguel (1%)
+            </label>
+        </div>
+        <div class="btn-container">
+            <button onclick="calculateCota()">Calcular Cota</button>
+        </div>
         <div class="result" id="result">
             <h2>Resultado do Cálculo</h2>
             <p>Valor da cota: <strong id="cota-value">R$ 0,00</strong></p>
@@ -87,201 +190,227 @@
             </div>
         </div>
     </div>
-
     <script>
         const { jsPDF } = window.jspdf;
-        let salarioMinimo = 1412.00;
-        let dataAtualizacaoSM = 'jan/2024';
+        let salarioMinimo = 1412.00; // Valor inicial (será atualizado)
 
         async function buscarSalarioMinimo() {
             try {
                 const proxy = 'https://cors-anywhere.herokuapp.com/';
                 const resposta = await fetch(proxy + 'http://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO=\'GAC12_SALMINRE12\')');
                 const dados = await resposta.json();
-                
-                if(dados.value && dados.value.length > 0) {
+                if(dados.value?.length > 0) {
                     const valores = dados.value
                         .filter(item => item.VALVALOR)
                         .sort((a, b) => new Date(b.VALDATA) - new Date(a.VALDATA));
-                    
                     if(valores.length > 0) {
                         salarioMinimo = parseFloat(valores[0].VALVALOR);
-                        dataAtualizacaoSM = new Date(valores[0].VALDATA).toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'});
-                        document.getElementById("sm-info").innerHTML = `R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${dataAtualizacaoSM})`;
-                        document.getElementById("salary").placeholder = `Salário mínimo atual: R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${dataAtualizacaoSM})`;
+                        salarioMinimo = Math.ceil(salarioMinimo * 100) / 100;
+                        document.getElementById("salary").placeholder = `Salário mínimo: R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                        document.getElementById("sm-info").textContent = `R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                     }
                 }
             } catch (erro) {
                 console.error('Erro ao buscar SM:', erro);
+                document.getElementById("sm-info").textContent = "Erro ao carregar";
             }
         }
 
-        function calcularContribuicao(salario) {
-            const faixas = [
-                { limite: salarioMinimo * 1, aliquota: 0.03 },
-                { limite: salarioMinimo * 1.5, aliquota: 0.04 },
-                { limite: salarioMinimo * 2, aliquota: 0.05 },
-                { limite: salarioMinimo * 2.5, aliquota: 0.06 },
-                { limite: salarioMinimo * 3.5, aliquota: 0.07 },
-                { limite: salarioMinimo * 4.5, aliquota: 0.08 },
-                { limite: salarioMinimo * 5, aliquota: 0.09 },
-                { limite: Infinity, aliquota: 0.10 }
-            ];
+        function calculateCota() {
+            buscarSalarioMinimo().then(() => {
+                const salary = parseFloat(document.getElementById("salary").value);
+                const numChildren = parseInt(document.getElementById("num_children").value) || 0;
+                const soleProvider = document.getElementById("sole_provider").checked;
+                const hasDependentFamily = document.getElementById("has_dependent_family").checked;
+                const paysSchool = document.getElementById("pays_school").checked;
+                const paysRent = document.getElementById("pays_rent").checked;
 
-            let total = 0;
-            let restante = salario;
-            let detalhes = [];
-
-            faixas.forEach((faixa, index) => {
-                const limiteAnterior = index === 0 ? 0 : faixas[index-1].limite;
-                const base = Math.min(restante, faixa.limite - limiteAnterior);
-                
-                if(base > 0) {
-                    const contribuicao = base * faixa.aliquota;
-                    total += contribuicao;
-                    restante -= base;
-                    
-                    detalhes.push({
-                        faixa: `${limiteAnterior.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})} - ${faixa.limite.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`,
-                        aliquota: `${(faixa.aliquota * 100).toFixed(1)}%`,
-                        base: base.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
-                        valor: contribuicao.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})
-                    });
+                if (isNaN(salary) || salary < 0) {
+                    alert("Salário inválido");
+                    return;
                 }
-            });
 
-            return { total, detalhes };
-        }
+                const faixas = [
+                    { limite: salarioMinimo * 1, aliquota: 0.03 },
+                    { limite: salarioMinimo * 1.5, aliquota: 0.04 },
+                    { limite: salarioMinimo * 2, aliquota: 0.05 },
+                    { limite: salarioMinimo * 2.5, aliquota: 0.06 },
+                    { limite: salarioMinimo * 3.5, aliquota: 0.07 },
+                    { limite: salarioMinimo * 4.5, aliquota: 0.08 },
+                    { limite: salarioMinimo * 5, aliquota: 0.09 },
+                    { limite: Infinity, aliquota: 0.10 }
+                ];
 
-        async function calculateCota() {
-            await buscarSalarioMinimo();
-            
-            const salary = parseFloat(document.getElementById("salary").value);
-            const numChildren = parseInt(document.getElementById("num_children").value) || 0;
-            const soleProvider = document.getElementById("sole_provider").checked;
-            const hasDependentFamily = document.getElementById("has_dependent_family").checked;
-            const paysSchool = document.getElementById("pays_school").checked;
-            const paysRent = document.getElementById("pays_rent").checked;
+                let contribuicaoBase = 0;
+                let restante = salary;
+                let detalhesFaixas = [];
 
-            if (isNaN(salary) || salary < 0) {
-                alert("Por favor, informe um valor válido para o salário.");
-                return;
-            }
+                faixas.forEach((faixa, index) => {
+                    const limiteAnterior = index === 0 ? 0 : faixas[index-1].limite;
+                    const base = Math.min(restante, faixa.limite - limiteAnterior);
+                    if(base > 0) {
+                        const valor = base * faixa.aliquota;
+                        contribuicaoBase += valor;
+                        restante -= base;
+                        detalhesFaixas.push({
+                            faixa: `${limiteAnterior.toLocaleString('pt-BR', {minimumFractionDigits: 2})} - ${faixa.limite.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`,
+                            base: base.toLocaleString('pt-BR', {minimumFractionDigits: 2}),
+                            aliquota: `${(faixa.aliquota * 100).toFixed(1)}%`,
+                            valor: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})
+                        });
+                    }
+                });
 
-            let desconto = 0;
-            const childDiscount = soleProvider ? 1.0 : 0.5;
-            desconto += childDiscount * numChildren;
-            desconto += hasDependentFamily ? 0.5 : 0;
-            desconto += paysSchool ? 1 : 0;
-            desconto += paysRent ? 1 : 0;
+                let descontos = [];
+                let totalDescontos = 0;
+                const descontoFilhos = (soleProvider ? 1.0 : 0.5) * numChildren;
+                if(descontoFilhos > 0) {
+                    descontos.push({
+                        tipo: "Filhos",
+                        valor: descontoFilhos,
+                        descricao: `(${numChildren} filho(s) - ${soleProvider ? 'único sustento' : '0.5% por filho'})`
+                    });
+                    totalDescontos += descontoFilhos;
+                }
 
-            const { total: contribuicaoBase, detalhes } = calcularContribuicao(salary);
-            let cota = contribuicaoBase - (salary * (desconto / 100));
-            const cotaOriginal = cota;
+                if(hasDependentFamily) {
+                    descontos.push({ tipo: "Familiar", valor: 0.5 });
+                    totalDescontos += 0.5;
+                }
+                if(paysSchool) {
+                    descontos.push({ tipo: "Escola", valor: 1 });
+                    totalDescontos += 1;
+                }
+                if(paysRent) {
+                    descontos.push({ tipo: "Aluguel", valor: 1 });
+                    totalDescontos += 1;
+                }
 
-            let mensagem;
-            if(cota < 10) {
-                mensagem = `<span class="alerta alerta-minimo">R$ 10,00 (valor mínimo)</span>`;
-                cota = 10;
-            } else if(cota > 10.99 && cota < 20) {
-                mensagem = `<span class="alerta alerta-recomendacao">R$ 20,00 (recomendado)</span>`;
-                cota = 20;
-            } else {
-                mensagem = `R$ ${cota.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            }
+                let descontoTotal = (salary * (totalDescontos / 100));
+                let cota = contribuicaoBase - descontoTotal;
+                cota = Math.max(cota, 0);
 
-            let detalhesHTML = `
-                <p>Cálculo detalhado:</p>
-                <ul>
-                    <li>Salário: R$ ${salary.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
-                    <li>Contribuição base: R$ ${contribuicaoBase.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
-                    <li>Descontos aplicados: ${desconto.toFixed(1)}%</li>
-                    <ul>
-                        <li>Por filhos com menos de 18 anos: ${(childDiscount * numChildren).toFixed(1)}% ${soleProvider ? '(desconto de 1% por filho como único sustento)' : ''}</li>
-                        <li>Apoio a familiar dependente: ${hasDependentFamily ? '0.5%' : '0%'}</li>
-                        <li>Paga escola: ${paysSchool ? '1%' : '0%'}</li>
-                        <li>Paga aluguel/financiamento: ${paysRent ? '1%' : '0%'}</li>
-                    </ul>
-                    <li>Contribuição final: R$ ${cotaOriginal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
-                </ul>
-                <h4>Detalhamento por faixa salarial:</h4>
-                <table style="width:100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background-color: #f0f0f0;">
-                            <th>Faixa</th>
-                            <th>Base de Cálculo</th>
-                            <th>Alíquota</th>
-                            <th>Contribuição</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${detalhes.map(item => `
+                let valorFinal = cota;
+                let mensagem = "";
+                if(valorFinal < 10) {
+                    mensagem = `<span class="alerta alerta-minimo">R$ 10,00 (valor mínimo)</span>`;
+                    valorFinal = 10;
+                } else if(valorFinal > 10.99 && valorFinal < 20) {
+                    mensagem = `<span class="alerta alerta-recomendacao">R$ 20,00 (recomendado)</span>`;
+                    valorFinal = 20;
+                } else {
+                    mensagem = `R$ ${valorFinal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                }
+
+                let detalhesHTML = `
+                    <h4>Detalhamento por faixa salarial:</h4>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>${item.faixa}</td>
-                                <td>${item.base}</td>
-                                <td>${item.aliquota}</td>
-                                <td>${item.valor}</td>
+                                <th>Faixa</th>
+                                <th>Base de Cálculo</th>
+                                <th>Alíquota</th>
+                                <th>Contribuição</th>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-
-            if(cotaOriginal < 10) {
-                detalhesHTML += `
-                    <div class="alerta alerta-minimo">
-                        Nota: Como o valor calculado (R$ ${cotaOriginal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}) é menor que R$ 10,00, 
-                        a cota mínima a ser considerada será de R$ 10,00.
-                    </div>
+                        </thead>
+                        <tbody>
+                            ${detalhesFaixas.map(faixa => `
+                                <tr>
+                                    <td>${faixa.faixa}</td>
+                                    <td>${faixa.base}</td>
+                                    <td>${faixa.aliquota}</td>
+                                    <td>${faixa.valor}</td>
+                                </tr>
+                            `).join('')}
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td colspan="2"></td>
+                                <td><strong>${contribuicaoBase.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 `;
-            } else if(cotaOriginal > 10.99 && cotaOriginal < 20) {
-                detalhesHTML += `
-                    <div class="alerta alerta-recomendacao">
-                        Recomendação: Valores entre R$ 10,99 e R$ 19,99 são arredondados para R$ 20,00 
-                        para simplificar a gestão financeira.
-                    </div>
-                `;
-            }
 
-            document.getElementById("cota-value").innerHTML = mensagem;
-            document.getElementById("calculation-details").innerHTML = detalhesHTML;
-            document.getElementById("result").style.display = "block";
+                if(descontos.length > 0) {
+                    detalhesHTML += `
+                        <h4>Detalhamento de Descontos:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Valor (%)</th>
+                                    ${descontos.some(d => d.descricao) ? '<th>Descrição</th>' : ''}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${descontos.map(d => `
+                                    <tr>
+                                        <td>${d.tipo}</td>
+                                        <td>${d.valor.toFixed(1)}%</td>
+                                        ${d.descricao ? `<td>${d.descricao}</td>` : ''}
+                                    </tr>
+                                `).join('')}
+                                <tr>
+                                    <td><strong>Total Descontos</strong></td>
+                                    <td><strong>${totalDescontos.toFixed(1)}%</strong></td>
+                                    ${descontos.some(d => d.descricao) ? '<td></td>' : ''}
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                detalhesHTML += `
+                    <h4>Cálculo Final:</h4>
+                    <ul>
+                        <li>Contribuição Base: R$ ${contribuicaoBase.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+                        ${totalDescontos > 0 ? `<li>Descontos Totais: ${totalDescontos.toFixed(1)}% (R$ ${descontoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})})</li>` : ''}
+                        <li>Valor Líquido: R$ ${cota.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+                    </ul>
+                `;
+
+                if(cota < 10) {
+                    detalhesHTML += `
+                        <div class="alerta alerta-minimo">
+                            Valor calculado (R$ ${cota.toLocaleString('pt-BR', {minimumFractionDigits: 2})}) abaixo do mínimo, ajustado para R$ 10,00
+                        </div>
+                    `;
+                } else if(cota > 10.99 && cota < 20) {
+                    detalhesHTML += `
+                        <div class="alerta alerta-recomendacao">
+                            Recomendação: Valores entre R$ 10,99 e R$ 19,99 são arredondados para R$ 20,00
+                        </div>
+                    `;
+                }
+
+                document.getElementById("cota-value").innerHTML = mensagem;
+                document.getElementById("calculation-details").innerHTML = detalhesHTML;
+                document.getElementById("result").style.display = "block";
+            });
         }
 
         function generatePDF() {
             const element = document.getElementById('result');
             html2canvas(element, {scale: 2}).then(canvas => {
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const today = new Date();
-                const dateStr = today.toLocaleDateString('pt-BR');
+                const today = new Date().toLocaleDateString('pt-BR');
                 
                 pdf.setFontSize(16);
-                pdf.text("Cálculo de Cota - " + dateStr, 20, 20);
-                pdf.setLineWidth(0.5);
+                pdf.text(`Cálculo de Cota - ${today}`, 20, 20);
                 pdf.line(20, 25, 190, 25);
-
+                
                 pdf.setFontSize(12);
                 pdf.text(`Salário: R$ ${document.getElementById("salary").value}`, 20, 35);
-                pdf.text(`Número de filhos: ${document.getElementById("num_children").value}`, 20, 42);
-                pdf.text(`Único sustento dos filhos: ${document.getElementById("sole_provider").checked ? 'Sim' : 'Não'}`, 20, 49);
-                pdf.text(`Apoia familiar dependente: ${document.getElementById("has_dependent_family").checked ? 'Sim' : 'Não'}`, 20, 56);
+                pdf.text(`Filhos: ${document.getElementById("num_children").value}`, 20, 42);
+                pdf.text(`Único sustento: ${document.getElementById("sole_provider").checked ? 'Sim' : 'Não'}`, 20, 49);
+                pdf.text(`Familiar dependente: ${document.getElementById("has_dependent_family").checked ? 'Sim' : 'Não'}`, 20, 56);
                 pdf.text(`Paga escola: ${document.getElementById("pays_school").checked ? 'Sim' : 'Não'}`, 20, 63);
-                pdf.text(`Paga aluguel/financiamento: ${document.getElementById("pays_rent").checked ? 'Sim' : 'Não'}`, 20, 70);
-                pdf.text(`Salário Mínimo Referência: R$ ${salarioMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${dataAtualizacaoSM})`, 20, 77);
-
-                pdf.line(20, 84, 190, 84);
+                pdf.text(`Paga aluguel: ${document.getElementById("pays_rent").checked ? 'Sim' : 'Não'}`, 20, 70);
                 
-                const cotaOriginal = parseFloat(document.getElementById("cota-value").textContent.replace(/[^0-9,]/g, '').replace(',', '.'));
-                if(cotaOriginal < 10) {
-                    pdf.setTextColor(213, 47, 47);
-                    pdf.text(`Nota: Valor mínimo aplicado de R$ 10,00`, 20, 91);
-                    pdf.setTextColor(0, 0, 0);
-                }
-
-                const imgData = canvas.toDataURL('image/png');
-                pdf.addImage(imgData, 'PNG', 10, 98, 190, 100);
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 80, 190, 100);
                 pdf.setFontSize(10);
-                pdf.text('Documento gerado em ' + dateStr, 20, 280);
+                pdf.text(`Gerado em: ${today}`, 20, 280);
+                
                 pdf.save('calculo-cota.pdf');
             });
         }
